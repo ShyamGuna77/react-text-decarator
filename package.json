@@ -1,14 +1,46 @@
 {
   "name": "react-text-decorator",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "React text-decorator wrapper for rough-notation library with Next.js 15 compatibility",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "react",
+    "react19",
+    "rough-notation",
+    "animation",
+    "annotation",
+    "highlighting",
+    "nextjs",
+    "nextjs15"
+  ],
+  "author": "ShyamGuna77",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ShyamGuna77/react-text-decarator"
+  },
+  
   "devDependencies": {
     "@types/node": "^22.15.3",
     "@types/react": "^19.1.2",

@@ -1,0 +1,19 @@
+
+
+# Exclude all files except dist directory
+*
+!dist/**/*
+!README.md
+!LICENSE
+!package.json
+
+# Exclude development and test files
+node_modules/
+src/
+tsconfig.json
+tsup.config.ts
+.eslintrc.js
+.prettierrc
+.git/
+.github/
+.gitignore
