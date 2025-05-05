@@ -2,11 +2,19 @@ import { ReactNode, CSSProperties } from "react";
 
 // import type { Annotation } from "rough-notation";
 
+export interface RoughAnnotation {
+  isShowing: boolean;
+  show: () => void;
+  hide: () => void;
+}
 
 export interface RoughAnnotation {
   isShowing: boolean;
   show: () => void;
   hide: () => void;
+  getAnnotation: () => {
+    animationDuration: number;
+  };
 }
 
 export type Notationtype =
@@ -31,7 +39,7 @@ export interface TextDecoratorProps {
   animationDelay?: number;
   padding?: number;
   multiline?: boolean;
-  brackets?: 'left' | 'right' | 'top' | 'bottom';
+  brackets?: "left" | "right" | "top" | "bottom";
   order?: number;
   hover?: boolean;
   className?: string;
@@ -46,7 +54,7 @@ export interface TextDecoratorGroupProps {
 
 export interface UseTextDecoratorReturn {
   ref: React.RefObject<HTMLElement | null>;
-//   annotation: Annotation | null;
+  //   annotation: Annotation | null;
   show: () => void;
   hide: () => void;
 }

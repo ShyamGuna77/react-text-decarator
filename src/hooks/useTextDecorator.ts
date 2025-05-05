@@ -1,127 +1,78 @@
 import { useRef, useEffect, useState } from "react";
 import { annotate } from "rough-notation";
 import {
-  Notationtype,
   UseTextDecoratorprops,
   UseTextDecoratorReturn,
-  RoughAnnotation,
-} from "@/components/types";
-import { useNotationGroup } from "@/components/RoughNotationGroup";
+} from "../components/types";
 
 /**
- * Hook to create and manage a single rough notation annotation
+ * Custom hook for using RoughNotation in React components
+ *
+ * @param options Configuration options for the rough notation
+ * @returns Object with ref, annotation instance, and methods to show/hide
  */
-export function useTextDecorator({
-  type,
-  color = "#000000",
-  strokeWidth = 1,
-  iterations = 2,
-  animationDuration = 800,
-  animationDelay = 0,
-  padding = 3,
-  multiline = true,
-  brackets,
-  show = false,
-}: UseTextDecoratorprops): UseTextDecoratorReturn {
-  // Reference to the element to annotate
-  const elementRef = useRef<HTMLElement | null>(null);
+export const useTextDecorator = (
+  options: UseTextDecoratorprops
+): UseTextDecoratorReturn => {
+  const elementRef = useRef<HTMLElement>(null);
+  const [annotation, setAnnotation] = useState<any | null>(null);
 
-  // Store the annotation instance
-  const annotationRef = useRef<RoughAnnotation | null>(null);
-
-  // Track whether the annotation is showing
-  const [isShowing, setIsShowing] = useState(show);
-
-  // Try to get the group context (will be null if not in a group)
-  let groupContext;
-  try {
-    groupContext = useNotationGroup();
-  } catch (e) {
-    // Not inside a group, that's okay
-    groupContext = null;
-  }
-
-  // Initialize the annotation when the element is available
   useEffect(() => {
-    if (elementRef.current && !annotationRef.current) {
-      // Create annotation
-      const annotation = annotate(elementRef.current, {
-        type,
-        color,
-        strokeWidth,
-        iterations,
-        animationDuration,
-        
-        padding,
-        multiline,
-        brackets: brackets as any, // Type coercion for brackets
-      });
+    if (!elementRef.current) return;
 
-      // Store the annotation
-      annotationRef.current = annotation;
+    // Create annotation
+    const anno = annotate(elementRef.current, {
+      type: options.type,
+      color: options.color,
+      animationDuration: options.animationDuration,
 
-      // Add annotation to group if in a group context
-      if (groupContext) {
-        groupContext.registerAnnotation(annotation);
-      }
+      strokeWidth: options.strokeWidth,
+      padding: options.padding,
+      iterations: options.iterations,
+      multiline: options.multiline ?? true,
+      brackets: options.brackets,
+    });
 
-      // Initialize state based on show prop
-      if (show && !isShowing && !groupContext) {
-        annotation.show();
-        setIsShowing(true);
-      }
-    }
+    setAnnotation(anno);
 
-    // Clean up annotation when unmounting
+    // Cleanup on unmount
     return () => {
-      if (annotationRef.current && groupContext) {
-        groupContext.unregisterAnnotation(annotationRef.current);
-      }
+      anno.remove();
     };
   }, [
-    type,
-    color,
-    strokeWidth,
-    iterations,
-    animationDuration,
-    animationDelay,
-    padding,
-    multiline,
-    brackets,
-    groupContext,
+    options.type,
+    options.color,
+    options.animationDuration,
+    options.animationDelay,
+    options.strokeWidth,
+    options.padding,
+    options.iterations,
+    options.multiline,
+    options.brackets,
   ]);
 
-  // Handle show prop changes (only if not in a group)
+  // Show annotation if show prop is true
   useEffect(() => {
-    if (annotationRef.current && !groupContext) {
-      if (show && !isShowing) {
-        annotationRef.current.show();
-        setIsShowing(true);
-      } else if (!show && isShowing) {
-        annotationRef.current.hide();
-        setIsShowing(false);
-      }
+    if (annotation && options.show) {
+      annotation.show();
+    } else if (annotation && options.show === false) {
+      annotation.hide();
     }
-  }, [show, isShowing, groupContext]);
+  }, [annotation, options.show]);
 
-  // Methods to manually show and hide the annotation
-  const showAnnotation = () => {
-    if (annotationRef.current && !isShowing) {
-      annotationRef.current.show();
-      setIsShowing(true);
-    }
+  // Public methods
+  const show = () => {
+    if (annotation) annotation.show();
   };
 
-  const hideAnnotation = () => {
-    if (annotationRef.current && isShowing) {
-      annotationRef.current.hide();
-      setIsShowing(false);
-    }
+  const hide = () => {
+    if (annotation) annotation.hide();
   };
 
   return {
     ref: elementRef,
-    show: showAnnotation,
-    hide: hideAnnotation,
+
+    show,
+    hide,
   };
-}
+};

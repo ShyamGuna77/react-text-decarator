@@ -1,5 +1,3 @@
-
-
 import React, {
   ForwardRefRenderFunction,
   forwardRef,
@@ -20,7 +18,7 @@ const TextNotationBase: ForwardRefRenderFunction<
 > = (
   {
     children,
-    type = "highlight", 
+    type = "highlight",
     show = false,
     color = "#000000",
     strokeWidth = 1,
