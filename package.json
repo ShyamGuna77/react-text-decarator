@@ -1,6 +1,6 @@
 {
   "name": "react-text-decorator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "React text-decorator wrapper for rough-notation library with Next.js 15 compatibility",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -9,7 +9,6 @@
     ".": {
       "require": "./dist/index.js",
       "import": "./dist/index.mjs"
-      
     }
   },
   "sideEffects": false,
@@ -40,7 +39,7 @@
     "type": "git",
     "url": "https://github.com/ShyamGuna77/react-text-decarator"
   },
-  
+  "homepage": "https://github.com/ShyamGuna77/react-text-decarator#readme",
   "devDependencies": {
     "@types/node": "^22.15.3",
     "@types/react": "^19.1.2",
