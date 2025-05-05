@@ -1,5 +1,3 @@
-
-
 import { defineConfig } from "tsup";
 
 export default defineConfig({
@@ -11,5 +9,5 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   minify: true,
-  external: ["react", "react-dom", "next", "rough-notation"],
+  external: ["react", "react-dom"], 
 });
