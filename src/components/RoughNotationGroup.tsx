@@ -6,37 +6,56 @@ import React, {
 } from "react";
 import { annotationGroup } from "rough-notation";
 import { TextDecoratorGroupProps } from "./types";
-import { RoughAnnotation } from "rough-notation/lib/model";
-/**
- * RoughNotationGroup component for React 19
- *
- * Groups multiple RoughNotation components to animate them in sequence
- */
+
+
 const TextNotationGroupBase: ForwardRefRenderFunction<
   HTMLDivElement,
   TextDecoratorGroupProps
 > = ({ children, show = false, ...rest }, ref) => {
-  // Track whether the group has been initialized
+  const groupRef = useRef<any>(null);
   const initialized = useRef(false);
 
-  // Initialize the annotation group
   useEffect(() => {
-    // Find all RoughNotation components with annotations
-    const childAnnotations = document.querySelectorAll("[data-rough-notation]");
-
-    if (childAnnotations.length > 0 && !initialized.current) {
-      // Create an annotation group
-      const group = annotationGroup(
-        Array.from(childAnnotations) as unknown as RoughAnnotation[]
+    const initializeGroup = () => {
+      const childAnnotations = document.querySelectorAll(
+        "[data-rough-notation]"
       );
 
-      // Show the group if requested
-      if (show) {
-        group.show();
-      }
+      if (childAnnotations.length > 0) {
+        // Clean up previous group if it exists
+        if (groupRef.current) {
+          groupRef.current.hide();
+        }
 
-      initialized.current = true;
-    }
+        // Create new annotation group
+        const group = annotationGroup(
+          Array.from(childAnnotations)
+            .map((el) => {
+              const annotation = (el as any).__rough_annotation;
+              return annotation;
+            })
+            .filter(Boolean)
+        );
+
+        groupRef.current = group;
+
+        if (show) {
+          group.show();
+        }
+
+        initialized.current = true;
+      }
+    };
+
+    // Initialize after a short delay to ensure all child annotations are ready
+    const timeoutId = setTimeout(initializeGroup, 100);
+
+    return () => {
+      clearTimeout(timeoutId);
+      if (groupRef.current) {
+        groupRef.current.hide();
+      }
+    };
   }, [show, children]);
 
   return (
@@ -49,4 +68,4 @@ const TextNotationGroupBase: ForwardRefRenderFunction<
 export const TextNotationGroup = forwardRef(TextNotationGroupBase);
 
 // Display name for React DevTools
- TextNotationGroup.displayName = " TextNotationGroup ";
+TextNotationGroup.displayName = "TextNotationGroup";

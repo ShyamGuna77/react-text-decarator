@@ -1,13 +1,5 @@
 import { ReactNode, CSSProperties } from "react";
 
-// import type { Annotation } from "rough-notation";
-
-export interface RoughAnnotation {
-  isShowing: boolean;
-  show: () => void;
-  hide: () => void;
-}
-
 export interface RoughAnnotation {
   isShowing: boolean;
   show: () => void;
@@ -26,6 +18,8 @@ export type Notationtype =
   | "crossed-off"
   | "bracket";
 
+export type BracketPosition = "left" | "right" | "top" | "bottom";
+
 export interface TextDecoratorProps {
   children: ReactNode;
   type?: Notationtype;
@@ -39,7 +33,7 @@ export interface TextDecoratorProps {
   animationDelay?: number;
   padding?: number;
   multiline?: boolean;
-  brackets?: "left" | "right" | "top" | "bottom";
+  brackets?: BracketPosition | BracketPosition[];
   order?: number;
   hover?: boolean;
   className?: string;
@@ -54,7 +48,6 @@ export interface TextDecoratorGroupProps {
 
 export interface UseTextDecoratorReturn {
   ref: React.RefObject<HTMLElement | null>;
-  //   annotation: Annotation | null;
   show: () => void;
   hide: () => void;
 }
@@ -71,7 +64,8 @@ export interface UseTextDecoratorprops {
   animationDelay?: number;
   padding?: number;
   multiline?: boolean;
-  brackets?: "left" | "right" | "top" | "bottom";
+  brackets?: BracketPosition | BracketPosition[];
+  order?: number;
   hover?: boolean;
   className?: string;
   id?: string;

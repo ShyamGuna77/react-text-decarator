@@ -1,77 +1,97 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { annotate } from "rough-notation";
 import {
   UseTextDecoratorprops,
   UseTextDecoratorReturn,
+  BracketPosition,
 } from "../components/types";
 
-/**
- * Custom hook for using RoughNotation in React components
- *
- * @param options Configuration options for the rough notation
- * @returns Object with ref, annotation instance, and methods to show/hide
- */
 export const useTextDecorator = (
   options: UseTextDecoratorprops
 ): UseTextDecoratorReturn => {
   const elementRef = useRef<HTMLElement>(null);
-  const [annotation, setAnnotation] = useState<any | null>(null);
+  const annotationRef = useRef<any>(null);
 
-  useEffect(() => {
+  const initializeAnnotation = useCallback(() => {
     if (!elementRef.current) return;
 
-    // Create annotation
-    const anno = annotate(elementRef.current, {
+    // Clean up previous annotation if it exists
+    if (annotationRef.current) {
+      annotationRef.current.remove();
+    }
+
+    // Create new annotation
+    const annotation = annotate(elementRef.current, {
       type: options.type,
       color: options.color,
       animationDuration: options.animationDuration,
-
       strokeWidth: options.strokeWidth,
       padding: options.padding,
       iterations: options.iterations,
       multiline: options.multiline ?? true,
-      brackets: options.brackets,
+      brackets: options.brackets as
+        | BracketPosition
+        | BracketPosition[]
+        | undefined,
     });
 
-    setAnnotation(anno);
+    // Store annotation on the element for group functionality
+    if (elementRef.current) {
+      (elementRef.current as any).__rough_annotation = annotation;
+      // Add order attribute for group sequencing
+      if (typeof options.order === "number") {
+        elementRef.current.setAttribute("data-order", options.order.toString());
+      }
+    }
 
-    // Cleanup on unmount
-    return () => {
-      anno.remove();
-    };
+    annotationRef.current = annotation;
+
+    if (options.show) {
+      annotation.show();
+    }
+
+    return annotation;
   }, [
     options.type,
     options.color,
     options.animationDuration,
-    options.animationDelay,
     options.strokeWidth,
     options.padding,
     options.iterations,
     options.multiline,
     options.brackets,
+    options.show,
+    options.order,
   ]);
 
-  // Show annotation if show prop is true
   useEffect(() => {
-    if (annotation && options.show) {
-      annotation.show();
-    } else if (annotation && options.show === false) {
-      annotation.hide();
+    const annotation = initializeAnnotation();
+
+    return () => {
+      if (annotation) {
+        annotation.remove();
+      }
+      if (elementRef.current) {
+        delete (elementRef.current as any).__rough_annotation;
+        elementRef.current.removeAttribute("data-order");
+      }
+    };
+  }, [initializeAnnotation]);
+
+  const show = useCallback(() => {
+    if (annotationRef.current) {
+      annotationRef.current.show();
     }
-  }, [annotation, options.show]);
+  }, []);
 
-  // Public methods
-  const show = () => {
-    if (annotation) annotation.show();
-  };
-
-  const hide = () => {
-    if (annotation) annotation.hide();
-  };
+  const hide = useCallback(() => {
+    if (annotationRef.current) {
+      annotationRef.current.hide();
+    }
+  }, []);
 
   return {
     ref: elementRef,
-
     show,
     hide,
   };

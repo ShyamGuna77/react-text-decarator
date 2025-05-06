@@ -7,11 +7,7 @@ import React, {
 } from "react";
 import { TextDecoratorProps } from "./types";
 import { useTextDecorator } from "@/hooks/useTextDecorator";
-/**
- * RoughNotation component for React 19
- *
- * A React wrapper for the rough-notation library that creates hand-drawn annotations.
- */
+
 const TextNotationBase: ForwardRefRenderFunction<
   HTMLSpanElement,
   TextDecoratorProps
@@ -95,6 +91,7 @@ const TextNotationBase: ForwardRefRenderFunction<
       style={style}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      data-rough-notation=""
       {...rest}
     >
       {children}
