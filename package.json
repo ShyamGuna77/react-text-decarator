@@ -1,6 +1,6 @@
 {
   "name": "react-text-decorator",
-  "version": "1.0.2",
+  "version": "1.1.2",
   "description": "React wrapper around rough-notation with full React 19 and Next.js 15 compatibility",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
