@@ -28,11 +28,11 @@ pnpm add react-text-decorator
 
 🎯 **Live Demo**:  
 Explore all annotation styles and features here:  
-👉 [react-text-decorator.vercel.app](https://react-text-decorator.vercel.app/)
+👉 [Demo](https://react-text-decorator.vercel.app/)
 
 🧩 **Source Code**:  
 You can view and clone the demo project from:  
-👉 [GitHub - decorator-demo](https://github.com/ShyamGuna77/decorator-demo)
+👉 [GitHub - Source code](https://github.com/ShyamGuna77/decorator-demo)
 
 This demo showcases all core functionalities of `react-text-decorator`, including annotation types, group animations, hover effects, and programmatic control using hooks.
 
